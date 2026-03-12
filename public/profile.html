@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>MyStudentSpace – My Profile</title>
+  <link href="css/profile.css" rel="stylesheet">
+</head>
+<body>
+<div class="app" id="app">
+
+<div class="sidebar" id="sidebar">
+
+<h2>MyStudentSpace</h2>
+
+<div class="menu">
+
+<a href="dashboard.html">Dashboard</a>
+<a href="profile.html">My Profile</a>
+
+<div class="menu-title">ACADEMICS</div>
+<a>Subjects</a>
+<a>Results</a>
+<a>Attendance</a>
+
+<div class="menu-title">COMMUNICATION</div>
+<a>Notifications</a>
+<a>Messages</a>
+
+<div class="menu-title">OTHER</div>
+<a>Timeline</a>
+<a>Resources</a>
+<a>Settings</a>
+
+</div>
+
+</div>
+
+<div class="main">
+  <div class="topbar">
+    <div class="search-box"><input type="text" placeholder="Search menu option..." /></div>
+    <div class="user-chip">
+      <div class="avatar" id="topAvatar">S</div>
+      <span id="topName">Student</span>
+    </div>
+  </div>
+
+  <div class="content" id="profileContent"></div>
+</div>
+
+<script>
+const defaultStudent = {
+  name:      "Student",
+  roll:      "XXXXXXXXXX",
+  dob:       "DD Month YYYY",
+  gender:    "—",
+  programme: "B.Tech CSE",
+  section:   "—",
+  semester:  4,
+  email:     "student@university.ac.in",
+  phone:     "+91 XXXXX XXXXX",
+  address:   "City, Punjab",
+  guardian:  "—",
+  cgpa:      8.2,
+  subjects: [
+    // { name: "Data Structures",    credits: 4, marks: 85, grade: "A"  },
+    // { name: "DBMS",               credits: 4, marks: 82, grade: "A"  },
+    // { name: "Operating Systems",  credits: 3, marks: 74, grade: "B+" },
+    // { name: "Computer Networks",  credits: 3, marks: 68, grade: "B"  },
+    // { name: "Software Engineering",credits:3, marks: 90, grade: "A+" },
+    // { name: "Maths IV",           credits: 3, marks: 61, grade: "C+" }
+  ],
+  attendance: [
+    // { subject: "Data Structures",     pct: 88 },
+    // { subject: "DBMS",                pct: 82 },
+    // { subject: "Operating Systems",   pct: 72 },
+    // { subject: "Computer Networks",   pct: 68 },
+    // { subject: "Software Engineering",pct: 91 },
+    // { subject: "Maths IV",            pct: 55 }
+  ],
+  exams: [
+    // { day:"08", mon:"Mar", name:"Software Engineering – Internal", time:"10:00 AM", room:"Room 305", type:"internal" },
+    // { day:"13", mon:"Mar", name:"DBMS Lab Practical",              time:"2:00 PM",  room:"Lab 2",    type:"lab"      },
+    // { day:"20", mon:"Mar", name:"Operating Systems – Mid Sem",     time:"9:00 AM",  room:"Hall B",   type:"external" },
+    // { day:"27", mon:"Mar", name:"Maths IV – Internal",             time:"11:00 AM", room:"Room 101", type:"internal" }
+  ],
+  skills: [
+    // { name:"Java",        level:"Intermediate", pct:70 },
+    // { name:"Python",      level:"Intermediate", pct:65 },
+    // { name:"SQL / DBMS",  level:"Advanced",     pct:85 },
+    // { name:"HTML / CSS",  level:"Intermediate", pct:60 }
+  ],
+  techTags: []
+};
+
+function barColor(p) { return p >= 80 ? 'fill-green' : p >= 65 ? 'fill-yellow' : 'fill-red'; }
+function gradeClass(g) { return g.startsWith('A') ? 'grade-a' : g.startsWith('B') ? 'grade-b' : 'grade-c'; }
+function examClass(t) { return t==='internal' ? 'type-internal' : t==='lab' ? 'type-lab' : 'type-external'; }
+function avgAttend(arr) { return Math.round(arr.reduce((a,b)=>a+b.pct,0)/arr.length); }
+function logout() { localStorage.removeItem('student'); window.location.href = 'index.html'; }
+
+function render(s) {
+  document.getElementById('topAvatar').textContent = s.name.charAt(0).toUpperCase();
+  document.getElementById('topName').textContent   = s.name.split(' ')[0];
+
+  const subRows = s.subjects.map(sub=>`
+    <tr>
+      <td>${sub.name}</td>
+      <td style="text-align:center">${sub.credits}</td>
+      <td style="text-align:center">${sub.marks}</td>
+      <td><span class="grade-badge ${gradeClass(sub.grade)}">${sub.grade}</span></td>
+    </tr>`).join('');
+
+  const attendBars = s.attendance.map(a=>`
+    <div class="attend-item">
+      <div class="attend-header"><span>${a.subject}</span><span class="attend-pct">${a.pct}%</span></div>
+      <div class="bar-bg"><div class="bar-fill ${barColor(a.pct)}" style="width:${a.pct}%"></div></div>
+    </div>`).join('');
+
+  const examItems = s.exams.map(e=>`
+    <div class="exam-item">
+      <div class="exam-date-box">
+        <div class="exam-day">${e.day}</div>
+        <div class="exam-mon">${e.mon}</div>
+      </div>
+      <div class="exam-info">
+        <div class="exam-name">${e.name}</div>
+        <div class="exam-meta">🕐 ${e.time} &nbsp;·&nbsp; 📍 ${e.room}</div>
+      </div>
+      <span class="exam-type ${examClass(e.type)}">${e.type.charAt(0).toUpperCase()+e.type.slice(1)}</span>
+    </div>`).join('');
+
+  const skillBars = s.skills.map(sk=>`
+    <div class="skill-item">
+      <div class="skill-header">
+        <span class="skill-name">${sk.name}</span>
+        <span class="skill-level">${sk.level}</span>
+      </div>
+      <div class="skill-bar-bg"><div class="skill-bar-fill" style="width:${sk.pct}%"></div></div>
+    </div>`).join('');
+
+  const tags = s.techTags.map(t=>`<span class="skill-tag">${t}</span>`).join('');
+
+  document.getElementById('profileContent').innerHTML = `
+
+
+    <div class="profile-hero">
+      <div class="profile-avatar-lg">${s.name.charAt(0).toUpperCase()}</div>
+      <div class="profile-info">
+        <h1>${s.name}</h1>
+        <div class="profile-sub">${s.roll} &nbsp;·&nbsp; ${s.programme} &nbsp;·&nbsp; Year ${s.semester}</div>
+        <div class="profile-meta">
+          <span class="meta-tag">📧 ${s.email}</span>
+          <span class="meta-tag">📞 ${s.phone}</span>
+          <span class="meta-tag">🏛️ Section ${s.section}</span>
+        </div>
+      </div>
+      <button class="edit-btn">✏️ Edit Profile</button>
+    </div>
+
+    <div class="stat-row">
+      <div class="stat-card">
+        <div class="stat-label">Year</div>
+        <div class="stat-value">${s.semester}</div>
+        <div class="stat-sub">${s.programme}</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Subjects</div>
+        <div class="stat-value">${s.subjects.length}</div>
+        <div class="stat-sub">This semester</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">CGPA</div>
+        <div class="stat-value">${s.cgpa}</div>
+        <div class="stat-sub">Out of 10.0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Attendance</div>
+        <div class="stat-value">${avgAttend(s.attendance)}%</div>
+        <div class="stat-sub">Overall average</div>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="card">
+        <div class="card-title">Personal Information</div>
+        <div class="info-grid">
+          <div class="info-field"><label>Full Name</label><p>${s.name}</p></div>
+          <div class="info-field"><label>Roll Number</label><p>${s.roll}</p></div>
+          <div class="info-field"><label>Date of Birth</label><p>${s.dob}</p></div>
+          <div class="info-field"><label>Gender</label><p>${s.gender}</p></div>
+          <div class="info-field"><label>Programme</label><p>${s.programme}</p></div>
+          <div class="info-field"><label>Section</label><p>${s.section}</p></div>
+          <div class="info-field"><label>Email</label><p>${s.email}</p></div>
+          <div class="info-field"><label>Phone</label><p>${s.phone}</p></div>
+          <div class="info-field"><label>Address</label><p>${s.address}</p></div>
+          <div class="info-field"><label>Guardian</label><p>${s.guardian}</p></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title"> Subjects &amp; Grades</div>
+        <table class="subject-table">
+          <thead>
+            <tr>
+              <th>Subject</th>
+              <th style="text-align:center">Credits</th>
+              <th style="text-align:center">Marks</th>
+              <th>Grade</th>
+            </tr>
+          </thead>
+          <tbody>${subRows}</tbody>
+        </table>
+      </div>
+    </div>
+
+
+    <div class="two-col">
+      <div class="card">
+        <div class="card-title">Attendance</div>
+        ${attendBars}
+      </div>
+      <div class="card">
+        <div class="card-title">Upcoming Exams &amp; Schedule</div>
+        ${examItems}
+      </div>
+    </div>
+
+
+    <div class="card" style="margin-bottom:28px;">
+      <div class="card-title">Skills</div>
+      <div class="skills-wrap">
+        <div>
+          <p style="font-size:13px;color:#888;margin-bottom:14px;">Technical Proficiency</p>
+          ${skillBars}
+        </div>
+        <div>
+          <p style="font-size:13px;color:#888;margin-bottom:14px;">Technologies &amp; Tools</p>
+          <div class="skill-tags">${tags}</div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+
+window.addEventListener('DOMContentLoaded', () => {
+
+  const savedUser = localStorage.getItem("loggedUser");
+
+  if(!savedUser){
+      alert("Please login first");
+      window.location.href="login.html";
+      return;
+  }
+
+  const user = JSON.parse(savedUser);
+
+  const student = {
+      name: user.name,
+      roll: user.roll,
+      programme: "B.Tech CSE",
+      semester: user.year,
+      email: user.email,
+      phone: "Not added",
+      address: "Not added",
+      guardian: "Not added",
+      dob: "Not added",
+      gender: "Not added",
+      cgpa: 8.2,
+      subjects: [],
+      attendance: [],
+      exams: [],
+      skills: [],
+      techTags: []
+  };
+
+  render(student);
+
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Sign In</title>
+<link rel="stylesheet" href="css/signin.css" >
+</head>
+
+<body>
+
+<div class="form-card">
+
+<h1>Sign In</h1>
+
+<div class="toggle">
+<button id="studentBtn" class="active" onclick="showStudent()">Student</button>
+<button id="teacherBtn" onclick="showTeacher()">Teacher</button>
+</div>
+<div id="studentForm">
+<input type="email" id="email" placeholder="Email address">
+<input type="password" id="password" placeholder="Password">
+<input type="text" id="name" placeholder="Name">
+<input type="text" id="roll" placeholder="Roll No">
+<p>Select Year</p>
+<div class="year">
+<label><input type="radio" name="year" value="1st">1st</label>
+<label><input type="radio" name="year" value="2nd">2nd</label>
+<label><input type="radio" name="year" value="3rd">3rd</label>
+<label><input type="radio" name="year" value="4th">4th</label>
+</div>
+<button class="signbtn" onclick="signupStudent()">Sign Up</button>
+</div>
+
+<div id="teacherForm" style="display:none">
+<input type="email" id="temail" placeholder="Email address">
+<input type="password" id="tpassword" placeholder="Password">
+<input type="text" id="tname" placeholder="Teacher Name">
+<button class="signbtn" onclick="signupTeacher()">Sign Up</button>
+</div>
+<p style="margin-top:15px">
+Already Signed up?
+<a href="/login">Login now</a>
+</p>
+</div>
+<script>
+function showStudent(){
+document.getElementById("studentForm").style.display="block";
+document.getElementById("teacherForm").style.display="none";
+
+document.getElementById("studentBtn").classList.add("active");
+document.getElementById("teacherBtn").classList.remove("active");
+}
+
+function showTeacher(){
+document.getElementById("studentForm").style.display="none";
+document.getElementById("teacherForm").style.display="block";
+
+document.getElementById("teacherBtn").classList.add("active");
+document.getElementById("studentBtn").classList.remove("active");
+}
+
+async function signupStudent(){
+
+const email=document.getElementById("email").value;
+const password=document.getElementById("password").value;
+const name=document.getElementById("name").value;
+const roll=document.getElementById("roll").value;
+const year=document.querySelector('input[name="year"]:checked')?.value;
+
+const res = await fetch("/signup",{
+method:"POST",
+headers:{
+"Content-Type":"application/json"
+},
+body:JSON.stringify({
+email,
+password,
+name,
+roll,
+year,
+role:"student"
+})
+});
+
+const result = await res.json();
+alert(result.message);
+window.location.href="/login";
+
+}
+async function signupTeacher(){
+const email=document.getElementById("temail").value;
+const password=document.getElementById("tpassword").value;
+const name=document.getElementById("tname").value;
+const res = await fetch("/signup",{
+method:"POST",
+headers:{
+"Content-Type":"application/json"
+},
+body:JSON.stringify({
+email,
+password,
+name,
+role:"teacher"
+})
+});
+const result = await res.json();
+alert(result.message);
+window.location.href="/login";
+}
+</script>
+</body>
+</html>

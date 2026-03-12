@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BEE project</title>
+    <link rel="stylesheet" href="css/login.css">
+    <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&display=swap" rel="stylesheet">
+
+</head>
+<body >
+    <header >
+        
+        <div id="navigation-bar" class="background">
+            <div class="logo">
+                <img src="images/main.png" alt="MyStudentSpace" height="50px" width="150px"  >
+            </div>
+            <div id="language">
+                <button>
+                    <div id="google_element"></div>
+                </button>
+            </div>
+
+            <div id="sign-in">
+                <button><a href="/signin">sign in</a></button>
+            </div>
+           
+        </div>
+
+        <div class="manage">
+            <div id="heading">
+                <h1>Manage your Student Profile,All in One Place </h1>
+                <p>ready to manage? enter your email to login... </p>
+            </div>
+        </div>
+        <div class="get-started">
+            <form id="email-address" onsubmit="return ValidateEmail()">
+                <label for="email"></label>
+                <input id="email" type="text" name="email" class="enter-email" placeholder="Enter your email address"
+                    required><br><br>
+                <input type="password" id="password" placeholder="Password" required> <p id="login-error" style="color:red;"></p>
+                <button type="submit" class="start">Get Started</button></button>
+            </form>
+        </div>
+        
+        
+    </header>
+
+    <main>
+    <hr>
+        <div>
+            <div id="more-reasons-to-join">
+                 <p>More reasons to join</p>
+            </div>
+
+            <div class="reasons">
+                <div class="box" id="reason1">
+                    <h3>WEBSITE DESIGN AND DEVELOPMENT</h3>
+                    <p>Our development professionals help you build a personalised platform wherein students are able to easily navigate and find relevant resources within a few clicks.</p>
+                </div>
+
+                <div class="box" id="reason2">
+                    <h3>MAINTAINENCE AND SUPPORT</h3>
+                    <p>Help out the scalability, stable functioning of the application and website, and high performance while ensuring minimal security issues. </p>
+                </div>
+            
+                <div class="box" id="reason3">
+                    <h3>MOBILE APP DEVELOPMENT</h3>
+                    <p>Leverage content and integral features. In addition, have us build various engaging modes while ensuring that the app works with all course modes that are available.</p>
+                </div>
+
+                <div class="box" id="reason4">
+                    <h3>MIGRATION</h3>
+                    <p>Our cloud capabilities offer a seamless, customized and an automated data migration reducing manual publishing effort and transaction friction. This also helps enrichen your content in more meaningful ways.</p>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="ready-to-manage">
+                <p>ready to manage? enter your email to login... </p>
+        </div>
+        
+        <div class="get-started2">
+                <input class="enter-email2" placeholder="email address">
+                <button class="start1"> Get Started  </button>
+        </div>
+    </main>
+    <footer>
+        <div class="contact">
+           <p>Questions? Call <a href="004-562-930-289"> 004-562-930-289</a></p>
+        </div>
+        <div class="footer">
+            <div class="F">
+                <ul>
+                    <li><a>FAQ</a></li>
+                    <li><a>Investor relations</a></li>
+                    <li><a>Privacy</a></li>
+                    <li><a>Speed test</a></li>
+                
+                </ul>
+            </div>
+            <div class="F">
+                <ul>
+                    <li><a>Help centre</a></li>
+                    <li><a>Jobs</a></li>
+                    <li><a>Cookie Preference</a></li>
+                    <li><a>Legal Notices </a></li>
+                </ul>
+            </div>
+
+            <div class="F">
+                <ul>
+                    <li><a>Account</a></li>
+                    <li><a>Ways to Learn</a></li>
+                    <li><a>Corporate Information</a></li>
+                    <li><a>Only on MyStudentSpace </a></li>
+                </ul>
+            </div>
+
+            <div class="F">
+                <ul>
+                    <li><a>Media centre</a></li>
+                    <li><a>Terms of Use</a></li>
+                    <li><a>Technical Issues</a></li>
+                    <li><a>Contact us </a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="end"> 
+            <p>MyStudentSpace !</p>
+        </div>
+    </footer>
+    <script>
+async function ValidateEmail() {
+
+const email = document.getElementById("email").value;
+const password = document.getElementById("password").value;
+const errorText = document.getElementById("login-error");
+
+errorText.textContent = "";
+
+const res = await fetch("/login",{
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify({email,password})
+});
+
+const result = await res.json();
+
+if(result.message){
+errorText.textContent=result.message;
+return false;
+}
+
+if (result.redirect) {
+
+localStorage.setItem("loggedUser", JSON.stringify(result.user));
+
+window.location.href = result.redirect;
+
+}
+
+return false;
+}
+</script>
+    <script src="http://translate.google.com/translate_a/element.js?cb=loadGoogleTranslate"></script>
+    <script>
+        function loadGoogleTranslate() {
+            new google.translate.TranslateElement("google_element")
+        }
+
+    </script>
+</body></html>

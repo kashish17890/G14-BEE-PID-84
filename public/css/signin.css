@@ -1,0 +1,96 @@
+
+body{
+margin:0;
+font-family:Arial, sans-serif;
+height:100vh;
+
+/* BACKGROUND IMAGE */
+background-image:url("../images/bg.jpg");
+background-size:cover;
+background-position:center;
+background-repeat:no-repeat;
+
+display:flex;
+justify-content:center;
+align-items:center;
+}
+
+/* FORM CARD */
+
+.form-card{
+background:rgba(0,0,0,0.75);
+padding:40px;
+width:360px;
+border-radius:8px;
+text-align:center;
+color:white;
+}
+
+.form-card h1{
+margin-bottom:20px;
+}
+
+/* INPUTS */
+
+input{
+width:100%;
+padding:10px;
+margin:8px 0;
+border:none;
+border-radius:4px;
+}
+
+/* TOGGLE BUTTONS */
+
+.toggle{
+display:flex;
+justify-content:center;
+gap:10px;
+margin-bottom:20px;
+}
+
+.toggle button{
+padding:8px 20px;
+border:none;
+background:#444;
+color:white;
+cursor:pointer;
+border-radius:4px;
+}
+
+.toggle button.active{
+background:red;
+}
+
+/* YEAR RADIO BUTTONS IN ONE LINE */
+
+.year{
+display:flex;
+justify-content:space-between;
+margin-top:10px;
+font-size:14px;
+}
+
+.year label{
+display:flex;
+align-items:center;
+gap:3px;
+}
+
+/* BUTTON */
+
+.signbtn{
+background:red;
+color:white;
+border:none;
+padding:10px;
+width:100%;
+margin-top:20px;
+cursor:pointer;
+border-radius:4px;
+}
+
+a{
+color:white;
+}
+
