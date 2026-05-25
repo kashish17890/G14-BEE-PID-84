@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Results</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: "Segoe UI", sans-serif;
+            background: #f4f7fb;
+        }
+
+        .container {
+            display: flex;
+        }
+
+        /* SIDEBAR (MATCH DASHBOARD) */
+        .sidebar {
+            background: #eef5fb;
+            padding: 26px 18px;
+            border-right: 1px solid var(--border);
+        }
+
+        .sidebar.hide {
+            width: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        .sidebar h2 {
+            margin: 0 0 26px;
+            font-size: 20px;
+            font-weight: 700;
+            color: #4f8fb8;
+        }
+
+        .menu-title {
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: .05em;
+            color: #6b7280;
+            margin: 24px 0 10px 10px;
+        }
+
+        .menu a {
+            display: block;
+            padding: 12px 16px;
+            border-radius: 16px;
+            color: #334155;
+            text-decoration: none;
+            margin-bottom: 8px;
+            font-size: 15px;
+        }
+
+        .menu a:hover {
+            background: #ddebf6;
+        }
+
+        .menu a.active {
+            background: #cfe3f2;
+            font-weight: 600;
+        }
+
+        /* MAIN */
+        .main {
+            flex: 1;
+            padding: 30px;
+        }
+
+        .title {
+            font-size: 26px;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        /* CARD STYLE */
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        /* TABLE STYLE */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            text-align: left;
+            padding: 12px;
+            background: #f1f4f9;
+            font-weight: 600;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #eee;
+        }
+
+        tr:hover {
+            background: #f9fbff;
+        }
+
+        .marks {
+            font-weight: bold;
+            color: #4a6cf7;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <!-- SIDEBAR -->
+        <div class="sidebar" id="sidebar">
+            <h2>MyStudentSpace</h2>
+
+            <div class="menu">
+                <a href="/dashboard/<%= userId %>?token=<%= token %>">Dashboard</a>
+                <a href="/profile/<%= userId %>?token=<%= token %>">My Profile</a>
+
+                <div class="menu-title">ACADEMICS</div>
+                <a href="/subjects/<%= userId %>?token=<%= token %>">Subjects</a>
+                <a class="active" href="/results/<%= userId %>?token=<%= token %>">Results</a>
+
+
+                <div class="menu-title">COMMUNICATION</div>
+                <a href="/announcements/<%= userId %>?token=<%= token %>">Announcements</a>
+
+                <a href="/announcements/<%= userId %>?token=<%= token %>">Messages</a>
+            </div>
+        </div>
+
+        <!-- MAIN CONTENT -->
+        <div class="main">
+
+            <div class="title">My Results</div>
+
+            <div class="card">
+
+
+
+                <% function getGradePoint(g) { if(!g) return 0; g=g.toUpperCase().trim(); if(g==='O' || g==='A+' )
+                    return 10; if(g==='A' ) return 9; if(g==='B+' ) return 8; if(g==='B' ) return 7; if(g==='C+' )
+                    return 6; if(g==='C' ) return 5; if(g==='P' ) return 4; return 0; } let defaultSem="Unknown" ; if
+                    (user && user.year) { let yrNum=parseInt(user.year); if (!isNaN(yrNum)) defaultSem=yrNum * 2; } let
+                    resultsBySem={}; if (dashboard && dashboard.results && dashboard.results.length> 0) {
+                    dashboard.results.forEach(res => {
+                    let s = res.sem || defaultSem;
+                    if (!resultsBySem[s]) resultsBySem[s] = [];
+                    resultsBySem[s].push(res);
+                    });
+                    }
+
+                    let sortedSems = Object.keys(resultsBySem).sort((a,b) => parseInt(a) - parseInt(b));
+                    %>
+
+                    <% if (sortedSems.length> 0) { %>
+                        <% let cumulativePoints=0; let cumulativeCredits=0; %>
+                            <% sortedSems.forEach(function(sem) { %>
+                                <% let semResults=resultsBySem[sem]; let semPoints=0; let semCredits=0; %>
+                                    <table
+                                        style="font-size: 14px; border: 1px solid #ddd; border-top: none; margin-bottom: 30px;">
+                                        <thead>
+                                            <tr style="border-bottom: 1px solid #ddd; background: #fff;">
+                                                <th style="width: 5%; background: #fff;"></th>
+                                                <th style="width: 20%; background: #fff; color: #6b7280;">COURSE CODE
+                                                </th>
+                                                <th style="width: 45%; background: #fff; color: #6b7280;">COURSE NAME
+                                                </th>
+                                                <th
+                                                    style="width: 15%; text-align: center; background: #fff; color: #6b7280;">
+                                                    CREDIT</th>
+                                                <th
+                                                    style="width: 15%; text-align: center; background: #fff; color: #6b7280;">
+                                                    GRADE</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <% semResults.forEach(function(res, index) { %>
+                                                <% let subObj=typeof subjects !=='undefined' && subjects.find(s=> s.name
+                                                    === res.subject);
+                                                    let subCode = subObj ? subObj.code : "N/A";
+                                                    let credits = subObj ? subObj.credits : 0;
+
+                                                    let gp = getGradePoint(res.grade);
+                                                    semPoints += (gp * credits);
+                                                    semCredits += credits;
+                                                    %>
+                                                    <tr style="background: #fff;">
+                                                        <td style="color: #6b7280;">
+                                                            <%= index + 1 %>
+                                                        </td>
+                                                        <td style="color: #4b5563;">
+                                                            <%= String(subCode).toUpperCase() %>
+                                                        </td>
+                                                        <td style="color: #4b5563; text-transform: uppercase;">
+                                                            <%= res.subject %>
+                                                        </td>
+                                                        <td style="text-align: center; color: #4b5563;">
+                                                            <%= Number(credits).toFixed(2) %>
+                                                        </td>
+                                                        <td
+                                                            style="text-align: center; color: #111827; font-weight: 500;">
+                                                            <%= String(res.grade).toUpperCase() %>
+                                                        </td>
+                                                    </tr>
+                                                    <% }) %>
+
+                                                        <% cumulativePoints +=semPoints; cumulativeCredits +=semCredits;
+                                                            let sgpa=semCredits> 0 ? (semPoints / semCredits).toFixed(2)
+                                                            : "0.00";
+                                                            let cgpa = cumulativeCredits > 0 ? (cumulativePoints /
+                                                            cumulativeCredits).toFixed(2) : "0.00";
+                                                            %>
+                                                            <tr
+                                                                style="background: #fafafa; font-weight: 700; border-top: 1px solid #ddd; border-bottom: 1px solid #ddd;">
+                                                                <td colspan="3"
+                                                                    style="padding: 16px 12px; color: #334155;">Study
+                                                                    Period: <%= sem %> SEM</td>
+                                                                <td colspan="2"
+                                                                    style="text-align: right; padding: 16px 12px; color: #334155;">
+                                                                    SGPA: <%= sgpa %> &nbsp;&nbsp;&nbsp; CGPA: <%= cgpa
+                                                                            %>
+                                                                </td>
+                                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <% }) %>
+                                        <% } else { %>
+                                            <table style="font-size: 14px; border: 1px solid #ddd; border-top: none;">
+                                                <thead>
+                                                    <tr style="border-bottom: 1px solid #ddd; background: #fff;">
+                                                        <th style="width: 5%; background: #fff;"></th>
+                                                        <th style="width: 20%; background: #fff; color: #6b7280;">COURSE
+                                                            CODE</th>
+                                                        <th style="width: 45%; background: #fff; color: #6b7280;">COURSE
+                                                            NAME</th>
+                                                        <th
+                                                            style="width: 15%; text-align: center; background: #fff; color: #6b7280;">
+                                                            CREDIT</th>
+                                                        <th
+                                                            style="width: 15%; text-align: center; background: #fff; color: #6b7280;">
+                                                            GRADE</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td colspan="5" style="text-align: center; padding: 20px;">No
+                                                            results available</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                            <% } %>
+
+
+            </div>
+
+        </div>
+
+    </div>
+
+</body>
+
+</html>

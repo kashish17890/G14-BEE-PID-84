@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>MyStudentSpace Dashboard</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="/css/dashboard.css">
+</head>
+
+<body>
+
+    <div class="app" id="app">
+
+        <!-- ===== SIDEBAR ===== -->
+        <div class="sidebar" id="sidebar">
+            <h2>MyStudentSpace</h2>
+
+            <div class="menu">
+                <a class="active" href="/dashboard/<%= userId %>?token=<%= token %>">Dashboard</a>
+                <a href="/profile/<%= userId %>?token=<%= token %>">My Profile</a>
+
+                <div class="menu-title">ACADEMICS</div>
+                <a href="/subjects/<%= userId %>?token=<%= token %>">Subjects</a>
+                <a href="/results/<%= userId %>?token=<%= token %>">Results</a>
+
+
+                <div class="menu-title">COMMUNICATION</div>
+                <a href="/announcements/<%= userId %>?token=<%= token %>">Announcements</a>
+
+                <a href="/announcements/<%= userId %>?token=<%= token %>">Messages</a>
+            </div>
+        </div>
+
+        <!-- ===== MAIN ===== -->
+        <div class="main">
+
+            <!-- HEADER -->
+            <div class="header">
+                <button class="toggle-btn" onclick="toggleSidebar()">☰</button>
+
+                <!-- <div class="search">
+        <input type="text" placeholder="Search menu...">
+    </div> -->
+
+                <div class="student-profile">
+                    <div class="avatar">
+                        <%= user && user.name ? user.name.charAt(0).toUpperCase() : "S" %>
+                    </div>
+                    <span>
+                        <%= user && user.name || "Student" %>
+                    </span>
+                </div>
+            </div>
+
+            <!-- ===== DASHBOARD ===== -->
+            <div class="dashboard">
+
+                <!-- ===== WELCOME ===== -->
+                <div class="welcome-card" style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <h2>Welcome, <%= user && user.name || "Student" %> 👋</h2>
+                        <p>Here’s your academic overview</p>
+                    </div>
+
+                    <% if (dashboard && dashboard.nextClass && dashboard.nextClass.subject) { %>
+                        <div class="next-class-pill" style="background: rgba(255,255,255,0.2); padding: 10px 20px; border-radius: 12px; backdrop-filter: blur(10px); color: white; font-size: 14px;">
+                            <div style="font-weight: 700; opacity: 0.8; font-size: 11px; text-transform: uppercase;">Next Class</div>
+                            <div style="font-size: 16px; font-weight: 700;"><%= dashboard.nextClass.subject %></div>
+                            <div style="font-size: 12px; opacity: 0.9;"><%= dashboard.nextClass.professor %> | <%= dashboard.nextClass.room %></div>
+                        </div>
+                    <% } %>
+                </div>
+
+                <!-- ===== ROW 1 ===== -->
+                <div class="row-top">
+
+                    <!-- LEFT CARDS -->
+                    <div class="left-stack">
+
+                        <div class="card">
+                            <span>Year</span>
+                            <h2>
+                                <%= user && user.year || "N/A" %>
+                            </h2>
+                        </div>
+
+                        <div class="card">
+                            <span>CGPA</span>
+                            <h2>
+                                <%= dashboard.cg ? dashboard.cg : "N/A" %>
+                            </h2>
+                        </div>
+
+                        <div class="card">
+                            <span>Semester Avg</span>
+                            <h2>
+                                <%= dashboard.semAvg ? dashboard.semAvg : "N/A" %>
+                            </h2>
+                        </div>
+
+                        <div class="card">
+                            <span>Next Exam</span>
+
+                            <h2>
+                                <%= (dashboard.nextExam && dashboard.nextExam.subject) ? dashboard.nextExam.subject : "N/A" %>
+                            </h2>
+
+                            <p class="exam-sub">
+                                <% if (dashboard.nextExam && dashboard.nextExam.date) { %>
+                                    <%= dashboard.nextExam.date %> at <%= dashboard.nextExam.time %>
+                                <% } else { %>
+                                    No upcoming exams
+                                <% } %>
+                            </p>
+                        </div>
+
+                    </div>
+
+                    <!-- PERFORMANCE -->
+                    <div class="panel performance-box">
+                        <h3>Semester Subject Performance</h3>
+
+                        <select id="semesterSelect" class="semester-select"></select>
+                        <canvas id="chart"></canvas>
+                    </div>
+
+                </div>
+
+                <!-- ===== ROW 2 ===== -->
+                <div class="row-mid">
+
+                    <!-- ATTENDANCE -->
+                    <div class="panel">
+                        <h3>Attendance Overview</h3>
+
+                        <div class="attendance">
+                            <% (dashboard.attendance || []).forEach(a=> { %>
+                                <div class="att">
+                                    <span>
+                                        <%= a.subject %>
+                                    </span>
+                                    <%= a.percent %>%
+                                </div>
+                                <% }) %>
+                        </div>
+                    </div>
+
+                    <!-- ANNOUNCEMENTS -->
+                    <div class="panel announcement-panel">
+                        <h3>Faculty Announcements</h3>
+
+                        <div class="announcement-list">
+                            <% if (announcements && announcements.length> 0) { %>
+                                <% announcements.forEach(a=> { %>
+                                    <div class="announcement">
+                                        <div class="announcement-title">
+                                            <%= a.title %>
+                                        </div>
+                                        <div class="announcement-text">
+                                            <%= a.text %>
+                                        </div>
+                                        <div class="announcement-time">
+                                            <%= a.time %>
+                                        </div>
+                                    </div>
+                                    <% }) %>
+                                        <% } else { %>
+                                            <p class="empty">No announcements</p>
+                                            <% } %>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- ===== ROW 3 ===== -->
+                <div class="panel">
+                    <h3>Curricular Events</h3>
+
+                    <table>
+                        <tr>
+                            <th>Date</th>
+                            <th>Event</th>
+                            <th>Club</th>
+                            <th>Venue</th>
+                        </tr>
+
+                        <% (dashboard.events || []).forEach(e=> { %>
+                            <tr>
+                                <td>
+                                    <%= e.date %>
+                                </td>
+                                <td>
+                                    <%= e.event %>
+                                </td>
+                                <td>
+                                    <%= e.club %>
+                                </td>
+                                <td>
+                                    <%= e.venue %>
+                                </td>
+                            </tr>
+                            <% }) %>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== SCRIPT ===== -->
+    <script>
+        function toggleSidebar() {
+            document.getElementById("sidebar").classList.toggle("hide");
+            document.getElementById("app").classList.toggle("hide-sidebar");
+        }
+
+        const data = <%- JSON.stringify((dashboard && dashboard.chartData) || {}) %>;
+
+        const semesters = Object.keys(data);
+        const select = document.getElementById("semesterSelect");
+
+        semesters.forEach(s => {
+            let o = document.createElement("option");
+            o.value = s;
+            o.text = "Sem " + s;
+            select.appendChild(o);
+        });
+
+        const ctx = document.getElementById("chart");
+
+        const chart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: data[semesters[0]]?.subjects || [],
+                datasets: [{
+                    label: "Marks",
+                    data: data[semesters[0]]?.marks || [],
+                    backgroundColor: "#7fb2d4"
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 100
+                    }
+                }
+            }
+        });
+
+        select.onchange = function () {
+            let s = this.value;
+            chart.data.labels = data[s]?.subjects || [];
+            chart.data.datasets[0].data = data[s]?.marks || [];
+            chart.update();
+        };
+    </script>
+
+</body>
+
+</html>

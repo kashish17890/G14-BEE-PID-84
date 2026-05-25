@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Edit Profile</title>
+  <link rel="stylesheet" href="/css/editProfile.css">
+</head>
+<body>
+
+<div class="form-container">
+
+<h2>Edit Profile</h2>
+
+<form action="/edit-profile?token=<%= token %>" method="POST">
+
+<div class="card">
+  <h3>Personal Info</h3>
+
+  <input name="dob" placeholder="DOB" value="<%= user.personalInfo?.dob || '' %>">
+
+  <select name="gender">
+    <option <%= user.personalInfo?.gender==='Male'?'selected':'' %>>Male</option>
+    <option <%= user.personalInfo?.gender==='Female'?'selected':'' %>>Female</option>
+  </select>
+
+  <input name="programme" placeholder="Programme" value="<%= user.personalInfo?.programme || '' %>">
+  <input name="section" placeholder="Section" value="<%= user.personalInfo?.section || '' %>">
+  <input name="phone" placeholder="Phone" value="<%= user.personalInfo?.phone || '' %>">
+  <input name="address" placeholder="Address" value="<%= user.personalInfo?.address || '' %>">
+  <input name="guardian" placeholder="Guardian" value="<%= user.personalInfo?.guardian || '' %>">
+</div>
+
+<div class="card">
+  <h3>Skills</h3>
+
+  <input name="skills"
+  value="<%= user.skills ? user.skills.map(s=>s.name).join(', ') : '' %>"
+  placeholder="Java, C++, React">
+</div>
+
+<button type="submit">Save Profile</button>
+
+</form>
+
+</div>
+
+</body>
+</html>

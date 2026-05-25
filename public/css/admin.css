@@ -520,13 +520,13 @@ td {
     color: white;
 }
 
-.subject-select{
-appearance:none;
-padding:8px 12px;
-border-radius:8px;
-border:1px solid var(--border);
-background:#f1f5f9;
-font-size:13px;
-margin-bottom:12px;
-width: 360px;
+.subject-select {
+    appearance: none;
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: #f1f5f9;
+    font-size: 13px;
+    margin-bottom: 12px;
+    width: 360px;
 }

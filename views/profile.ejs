@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>MyStudentSpace – Profile</title>
+  <link href="/css/profile.css" rel="stylesheet">
+</head>
+<body>
+
+<div class="app">
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+  <h2>MyStudentSpace</h2>
+
+  <div class="menu">
+    <a href="/dashboard/<%= user._id %>?token=<%= token %>">Dashboard</a>
+    <a href="/profile/<%= user._id %>?token=<%= token %>" class="active">My Profile</a>
+
+    <div class="menu-title">ACADEMICS</div>
+    <a href="/subjects/<%= user._id %>?token=<%= token %>">Subjects</a>
+    <a href="/results/<%= user._id %>?token=<%= token %>">Results</a>
+
+    <div class="menu-title">COMMUNICATION</div>
+    <a href="/announcements/<%= user._id %>?token=<%= token %>">Announcements</a>
+    <a>Messages</a>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="search-box">
+    <input type="text" placeholder="Search..." />
+  </div>
+
+  <div class="user-chip">
+    <div class="avatar">
+      <% if (user.photo) { %>
+        <img src="<%= user.photo %>" style="width:35px;height:35px;border-radius:50%;">
+      <% } else { %>
+        <%= user.name.charAt(0).toUpperCase() %>
+      <% } %>
+    </div>
+    <span><%= user.name.split(" ")[0] %></span>
+  </div>
+</div>
+
+<!-- CONTENT -->
+<div class="content">
+
+<!-- PROFILE HERO -->
+<div class="profile-hero">
+
+  <div class="profile-avatar-lg">
+    <% if (user.photo) { %>
+      <img src="<%= user.photo %>" style="width:120px;height:120px;border-radius:50%;object-fit:cover;">
+    <% } else { %>
+      <%= user.name.charAt(0).toUpperCase() %>
+    <% } %>
+  </div>
+
+  <div class="profile-info">
+    <div class="profile-info-top">
+      <div>
+        <h1><%= user.name %></h1>
+        <div class="profile-sub"><%= user.email %></div>
+        <div class="profile-meta">
+          <span class="meta-tag">Roll: <%= user.roll || "N/A" %></span>
+          <span class="meta-tag">Year: <%= user.year || "N/A" %></span>
+        </div>
+      </div>
+
+      <!-- ✅ EDIT BUTTON moved to top right -->
+      <a href="/edit-profile/<%= user._id %>?token=<%= token %>">
+        <button class="edit-btn">Edit Profile</button>
+      </a>
+    </div>
+
+    <!-- UPLOAD — neat row below -->
+    <form action="/upload-profile?token=<%= token %>" method="POST" enctype="multipart/form-data" class="upload-form">
+      <input type="file" name="profilePic" required>
+      <button type="submit">Upload Photo</button>
+    </form>
+
+  </div>
+
+</div>
+
+<!-- STATS -->
+<div class="stat-row">
+  <div class="stat-card">
+    <div class="stat-label">Subjects</div>
+    <div class="stat-value"><%= dashboard?.subjects?.length || 0 %></div>
+  </div>
+
+  <div class="stat-card">
+    <div class="stat-label">Attendance</div>
+    <div class="stat-value"><%= dashboard?.attendance?.length || 0 %></div>
+  </div>
+
+  <div class="stat-card">
+    <div class="stat-label">Results</div>
+    <div class="stat-value"><%= dashboard?.results?.length || 0 %></div>
+  </div>
+
+  <div class="stat-card">
+    <div class="stat-label">Status</div>
+    <div class="stat-value">Active</div>
+  </div>
+</div>
+
+
+<div class="card">
+  <div class="card-title">Personal Information</div>
+  <div class="info-grid">
+    <div class="info-field">
+      <label>Date of Birth</label>
+      <p><%= user.personalInfo?.dob || "N/A" %></p>
+    </div>
+    <div class="info-field">
+      <label>Gender</label>
+      <p><%= user.personalInfo?.gender || "N/A" %></p>
+    </div>
+    <div class="info-field">
+      <label>Programme</label>
+      <p><%= user.personalInfo?.programme || "N/A" %></p>
+    </div>
+    <div class="info-field">
+      <label>Section</label>
+      <p><%= user.personalInfo?.section || "N/A" %></p>
+    </div>
+    <div class="info-field">
+      <label>Phone</label>
+      <p><%= user.personalInfo?.phone || "N/A" %></p>
+    </div>
+    <div class="info-field">
+      <label>Address</label>
+      <p><%= user.personalInfo?.address || "N/A" %></p>
+    </div>
+    <div class="info-field">
+      <label>Guardian</label>
+      <p><%= user.personalInfo?.guardian || "N/A" %></p>
+    </div>
+  </div>
+</div>
+
+<!-- SKILLS — only name, no level/category -->
+<div class="card">
+  <div class="card-title">Skills</div>
+
+  <% if (user.skills && user.skills.length > 0) { %>
+    <div class="skill-tags">
+      <% user.skills.forEach(s => { %>
+        <span class="skill-tag"><%= s.name %></span>
+      <% }) %>
+    </div>
+  <% } else { %>
+    <p>No skills added</p>
+  <% } %>
+</div>
+
+<!-- TWO COLUMN -->
+<div class="two-col">
+
+<!-- ATTENDANCE -->
+<div class="card">
+  <div class="card-title">Attendance</div>
+
+  <% if (dashboard?.attendance?.length > 0) { %>
+    <% dashboard.attendance.forEach(a => { %>
+      <div class="attend-item">
+        <div class="attend-header">
+          <span><%= a.subject %></span>
+          <span class="attend-pct"><%= a.percent %>%</span>
+        </div>
+
+        <div class="bar-bg">
+          <div class="bar-fill 
+            <%= a.percent >= 75 ? 'fill-green' : a.percent >= 50 ? 'fill-yellow' : 'fill-red' %>" 
+            style="width:<%= a.percent %>%">
+          </div>
+        </div>
+      </div>
+    <% }) %>
+  <% } else { %>
+    <p>No attendance data</p>
+  <% } %>
+</div>
+
+<!-- RESULTS -->
+<div class="card">
+  <div class="card-title">Results</div>
+
+  <% if (dashboard?.results?.length > 0) { %>
+    <table class="subject-table">
+      <thead>
+        <tr>
+          <th>Subject</th>
+          <th>Marks</th>
+          <th>Grade</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <% dashboard.results.forEach(r => { %>
+          <tr>
+            <td><%= r.subject %></td>
+            <td><%= r.marks %></td>
+            <td>
+              <span class="grade-badge 
+                <%= r.grade === 'A' ? 'grade-a' : r.grade === 'B' ? 'grade-b' : 'grade-c' %>">
+                <%= r.grade %>
+              </span>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  <% } else { %>
+    <p>No results</p>
+  <% } %>
+</div>
+
+</div>
+
+</div>
+</div>
+</div>
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+

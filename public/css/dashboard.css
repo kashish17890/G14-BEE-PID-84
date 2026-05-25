@@ -18,21 +18,18 @@ font-family:'Inter',system-ui;
 background:var(--bg);
 }
 
-/* APP LAYOUT */
-
+/* ===== APP LAYOUT ===== */
 .app{
 display:grid;
-grid-template-columns:260px 1fr;
+grid-template-columns:260px minmax(0,1fr);
 min-height:100vh;
-transition:.3s;
 }
 
 .app.hide-sidebar{
-grid-template-columns:0 1fr;
+grid-template-columns:0 minmax(0,1fr);
 }
 
-/* SIDEBAR */
-
+/* ===== SIDEBAR ===== */
 .sidebar{
 background:#eef5fb;
 padding:26px 18px;
@@ -79,8 +76,13 @@ background:#cfe3f2;
 font-weight:600;
 }
 
-/* HEADER */
+/* ===== MAIN FIX ===== */
+.main{
+width:100%;
+min-width:0;
+}
 
+/* ===== HEADER ===== */
 .header{
 display:flex;
 align-items:center;
@@ -108,30 +110,65 @@ background:#f1f5f9;
 width:220px;
 }
 
-/* DASHBOARD GRID */
-
-.dashboard{
-padding:24px;
-display:grid;
-grid-template-columns:minmax(0,1.9fr) minmax(0,1.1fr);
-gap:24px;
+/* PROFILE */
+.student-profile{
+display:flex;
+align-items:center;
+gap:10px;
+margin-left:auto;
+font-weight:600;
 }
 
-/* STAT CARDS */
+.avatar{
+width:35px;
+height:35px;
+background:#7fb2d4;
+color:white;
+border-radius:50%;
+display:flex;
+align-items:center;
+justify-content:center;
+font-weight:bold;
+}
 
-.cards{
-grid-column:1 / span 2;
+/* ===== DASHBOARD ===== */
+.dashboard{
+padding:24px;
+display:flex;
+flex-direction:column;
+gap:20px;
+width:100%;
+max-width:100%;
+}
+
+/* ===== WELCOME ===== */
+.welcome{
+font-size:18px;
+font-weight:600;
+margin-bottom:10px;
+}
+
+/* ===== TOP GRID FIX ===== */
+.top-grid{
 display:grid;
-grid-template-columns:repeat(4,1fr);
+grid-template-columns:minmax(0,300px) minmax(0,1fr);
+gap:24px;
+align-items:stretch;
+}
+
+/* ===== LEFT STACK ===== */
+.left-stack{
+display:flex;
+flex-direction:column;
 gap:18px;
 }
 
+/* ===== CARDS ===== */
 .card{
 background:white;
 padding:22px;
 border-radius:14px;
 box-shadow:var(--shadow);
-height:100px;
 display:flex;
 flex-direction:column;
 justify-content:center;
@@ -144,27 +181,44 @@ color:var(--muted);
 
 .card h2{
 margin:4px 0 0;
-font-size:24px;
+font-size:22px;
 font-weight:600;
 }
 
-/* PANELS */
+/* ===== RIGHT STACK ===== */
+.right-stack{
+display:flex;
+flex-direction:column;
+gap:18px;
+height:100%;
+min-width:0;
+}
 
+/* ===== PANELS ===== */
 .panel{
 background:white;
 border-radius:14px;
 padding:20px;
 box-shadow:var(--shadow);
+width:100%;
+overflow:hidden;
+display:flex;
+flex-direction:column;
 }
 
-.panel h3{
-margin:0 0 16px;
-font-size:15px;
-font-weight:700;
+/* ALIGNMENT */
+.performance-box{
+flex:1;
 }
 
-/* SEMESTER DROPDOWN */
+.announcements-box{
+flex:1;
+display:flex;
+flex-direction:column;
+justify-content:flex-end;
+}
 
+/* ===== SEMESTER SELECT ===== */
 .semester-select{
 appearance:none;
 padding:8px 12px;
@@ -175,26 +229,18 @@ font-size:13px;
 margin-bottom:12px;
 }
 
-/* FACULTY ANNOUNCEMENTS */
-
+/* ===== ANNOUNCEMENTS ===== */
 .announcement{
 background:#f8fbfe;
 border:1px solid var(--border);
 padding:14px;
 border-radius:10px;
 margin-bottom:12px;
-transition:.2s;
 font-size:13px;
-line-height:1.35;
-}
-
-.announcement:hover{
-background:#eef6fb;
 }
 
 .announcement-title{
 font-weight:600;
-font-size:14px;
 margin-bottom:4px;
 }
 
@@ -208,8 +254,11 @@ font-size:12px;
 color:#94a3b8;
 }
 
-/* ATTENDANCE */
+.empty{
+color:#94a3b8;
+}
 
+/* ===== ATTENDANCE ===== */
 .attendance{
 display:grid;
 grid-template-columns:repeat(3,1fr);
@@ -232,36 +281,7 @@ color:#64748b;
 margin-bottom:6px;
 }
 
-/* NEXT CLASS */
-
-.next-class-card{
-background:#eef6fb;
-border-radius:12px;
-padding:18px;
-border:1px solid var(--border);
-}
-
-.next-class-subject{
-font-size:17px;
-font-weight:600;
-margin-bottom:14px;
-}
-
-.next-class-details{
-display:flex;
-justify-content:space-between;
-font-size:14px;
-color:#64748b;
-}
-
-.next-class-details span{
-display:block;
-font-weight:600;
-color:#1e293b;
-}
-
-/* EVENTS TABLE */
-
+/* ===== EVENTS TABLE ===== */
 table{
 width:100%;
 border-collapse:separate;
@@ -288,22 +308,100 @@ border-radius:10px 0 0 10px;
 table td:last-child{
 border-radius:0 10px 10px 0;
 }
-.student-profile{
-display:flex;
-align-items:center;
-gap:10px;
-margin-left:auto;
-font-weight:600;
+
+/* ===== CHART FIX ===== */
+canvas{
+max-width:100% !important;
 }
 
-.avatar{
-width:35px;
-height:35px;
-background:#7fb2d4;
-color:white;
-border-radius:50%;
+/* ===== ROW 1 ===== */
+.row-top{
+display:grid;
+grid-template-columns:300px 1fr;
+gap:24px;
+align-items:stretch;
+}
+
+/* LEFT STACK */
+.left-stack{
 display:flex;
-align-items:center;
-justify-content:center;
-font-weight:bold;
+flex-direction:column;
+gap:18px;
+}
+
+.left-stack .card{
+flex:1;
+}
+
+/* PERFORMANCE HEIGHT MATCH */
+.performance-box{
+display:flex;
+flex-direction:column;
+height:100%;
+}
+
+/* ===== ROW 2 ===== */
+.row-mid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:24px;
+}
+
+/* FIX OVERFLOW */
+canvas{
+max-width:100% !important;
+}
+
+/* ===== BETTER WELCOME ===== */
+.welcome-card{
+background: linear-gradient(135deg, #7fb2d4, #5fa3c7);
+color: white;
+padding: 20px 24px;
+border-radius: 14px;
+box-shadow: 0 6px 14px rgba(0,0,0,0.08);
+display: flex;
+align-items: center;
+}
+
+.welcome-card h2{
+margin: 0;
+font-size: 20px;
+font-weight: 600;
+}
+
+.welcome-card p{
+margin: 4px 0 0;
+font-size: 13px;
+opacity: 0.9;
+}
+
+/* ===== FIXED ANNOUNCEMENTS HEIGHT ===== */
+.announcement-panel{
+display: flex;
+flex-direction: column;
+}
+
+.announcement-list{
+max-height: 180px;   /* 👈 approx 2 items */
+overflow-y: auto;
+padding-right: 5px;
+}
+
+/* Scroll styling (clean) */
+.announcement-list::-webkit-scrollbar{
+width: 6px;
+}
+
+.announcement-list::-webkit-scrollbar-thumb{
+background: #cbd5e1;
+border-radius: 10px;
+}
+
+.announcement-list::-webkit-scrollbar-track{
+background: transparent;
+}
+
+/* Slight spacing fix */
+.announcement{
+margin-bottom: 10px;
 }

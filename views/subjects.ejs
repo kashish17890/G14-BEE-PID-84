@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Subjects</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: "Segoe UI", sans-serif;
+            background: #f4f7fb;
+        }
+
+        .container {
+            display: flex;
+        }
+
+        /* SIDEBAR (MATCH DASHBOARD) */
+        .sidebar {
+            background: #eef5fb;
+            padding: 26px 18px;
+            border-right: 1px solid var(--border);
+        }
+
+        .sidebar.hide {
+            width: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        .sidebar h2 {
+            margin: 0 0 26px;
+            font-size: 20px;
+            font-weight: 700;
+            color: #4f8fb8;
+        }
+
+        .menu-title {
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: .05em;
+            color: #6b7280;
+            margin: 24px 0 10px 10px;
+        }
+
+        .menu a {
+            display: block;
+            padding: 12px 16px;
+            border-radius: 16px;
+            color: #334155;
+            text-decoration: none;
+            margin-bottom: 8px;
+            font-size: 15px;
+        }
+
+        .menu a:hover {
+            background: #ddebf6;
+        }
+
+        .menu a.active {
+            background: #cfe3f2;
+            font-weight: 600;
+        }
+
+        /* MAIN */
+        .main {
+            flex: 1;
+            padding: 30px;
+        }
+
+        .title {
+            font-size: 26px;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        /* CARD STYLE */
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        /* TABLE STYLE */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            text-align: left;
+            padding: 12px;
+            background: #f1f4f9;
+            font-weight: 600;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #eee;
+        }
+
+        tr:hover {
+            background: #f9fbff;
+        }
+
+        .credits {
+            font-weight: bold;
+            color: #4a6cf7;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <!-- SIDEBAR -->
+        <div class="sidebar" id="sidebar">
+            <h2>MyStudentSpace</h2>
+
+            <div class="menu">
+                <a href="/dashboard/<%= userId %>?token=<%= token %>">Dashboard</a>
+                <a href="/profile/<%= userId %>?token=<%= token %>">My Profile</a>
+
+                <div class="menu-title">ACADEMICS</div>
+                <a class="active" href="/subjects/<%= userId %>?token=<%= token %>">Subjects</a>
+                <a href="/results/<%= userId %>?token=<%= token %>">Results</a>
+
+
+                <div class="menu-title">COMMUNICATION</div>
+                <a href="/announcements/<%= userId %>?token=<%= token %>">Announcements</a>
+
+                <a href="/announcements/<%= userId %>?token=<%= token %>">Messages</a>
+            </div>
+        </div>
+
+        <!-- MAIN CONTENT -->
+        <div class="main">
+
+            <div class="title">Subjects</div>
+
+            <div class="card">
+
+
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Course Code</th>
+                            <th>Course Name</th>
+                            <th>Credits</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <% if (subjects && subjects.length> 0) { %>
+
+                            <% subjects.forEach(function(sub) { %>
+                                <tr>
+                                    <td>
+                                        <%= sub.code %>
+                                    </td>
+                                    <td>
+                                        <%= sub.name %>
+                                    </td>
+                                    <td>
+                                        <%= sub.credits %>
+                                    </td>
+                                </tr>
+                                <% }) %>
+
+                                    <% } else { %>
+
+                                        <tr>
+                                            <td colspan="3">No subjects available</td>
+                                        </tr>
+
+                                        <% } %>
+                    </tbody>
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</body>
+
+</html>

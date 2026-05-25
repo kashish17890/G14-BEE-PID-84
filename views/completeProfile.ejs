@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Complete Profile</title>
+    <link rel="stylesheet" href="/css/completeProfile.css">
+</head>
+<body>
+
+<div class="profile-card">
+
+<h2>Complete Your Profile</h2>
+
+<p>Name: <%= user.name %></p>
+<p>Email: <%= user.email %></p>
+
+<form id="profileForm">
+    <input type="text" id="roll" placeholder="Enter Roll No" required>
+    
+    <p>Select Year</p>
+    <div class="year">
+        <label><input type="radio" name="year" value="1st">1st</label>
+        <label><input type="radio" name="year" value="2nd">2nd</label>
+        <label><input type="radio" name="year" value="3rd">3rd</label>
+        <label><input type="radio" name="year" value="4th">4th</label>
+    </div>
+
+    <button type="submit">Continue</button>
+</form>
+
+</div>
+<script>
+document.getElementById("profileForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const roll = document.getElementById("roll").value;
+    const year = document.querySelector('input[name="year"]:checked')?.value;
+
+    const token = new URLSearchParams(window.location.search).get("token");
+
+    const res = await fetch("/complete-profile", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": token
+        },
+        body: JSON.stringify({ roll, year })
+    });
+
+    const data = await res.json();
+
+    window.location.href = `/dashboard/${data.userId}?token=${token}`;
+});
+</script>
+
+</body>
+</html>

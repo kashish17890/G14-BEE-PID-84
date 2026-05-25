@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Select Role</title>
+    <link rel="stylesheet" href="/css/chooseRole.css">
+</head>
+<body>
+
+<div class="role-card">
+    <h2>Select Your Role</h2>
+
+    <div class="role-buttons">
+        <button onclick="setRole('student')">Student</button>
+        <button onclick="setRole('teacher')">Teacher</button>
+    </div>
+</div>
+
+<script>
+async function setRole(role){
+    const userId = "<%= userId %>";
+
+    // 🔥 get token from URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const token = urlParams.get("token");
+
+    const res = await fetch("/set-role", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": token   // ✅ VERY IMPORTANT
+        },
+        body: JSON.stringify({ userId, role })
+    });
+
+    const data = await res.json();
+
+    // ✅ keep token during redirect
+    window.location.href = data.redirect + "?token=" + data.token;
+}
+</script>
+
+</body>
+</html>

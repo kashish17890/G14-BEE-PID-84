@@ -1,3 +1,16 @@
 [
-  
+  {
+    "email": "s@gmail.com",
+    "password": "123",
+    "name": "s",
+    "roll": "123",
+    "year": "2nd",
+    "role": "student"
+  },
+  {
+    "email": "t@gmail.com",
+    "password": "123",
+    "name": "t",
+    "role": "teacher"
+  }
 ]

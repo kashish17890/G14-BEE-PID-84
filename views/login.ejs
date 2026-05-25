@@ -39,7 +39,12 @@
                 <input id="email" type="text" name="email" class="enter-email" placeholder="Enter your email address"
                     required><br><br>
                 <input type="password" id="password" placeholder="Password" required> <p id="login-error" style="color:red;"></p>
-                <button type="submit" class="start">Get Started</button></button>
+                <button type="submit" class="start">Get Started</button>
+                <a href="/auth/google">
+            <button type="button" style="margin-top:10px;">
+            Continue with Google
+            </button>
+            </a>
             </form>
         </div>
         
@@ -153,12 +158,13 @@ errorText.textContent=result.message;
 return false;
 }
 
-if (result.redirect) {
-
-localStorage.setItem("loggedUser", JSON.stringify(result.user));
-
-window.location.href = result.redirect;
-
+if(result.token){
+    localStorage.setItem("token", result.token);
+    if(result.role === "teacher"){
+       window.location.href = `/admin?token=${result.token}`;
+    } else {
+        window.location.href = `/dashboard/${result.userId}?token=${result.token}`;
+    }
 }
 
 return false;
